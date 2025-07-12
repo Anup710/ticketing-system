@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Ticketing System</title>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
+    <link rel="stylesheet" href="../static/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1>WIN Hydraulics R&D Ticketing System</h1>
+            <div class="header-actions">
+                <span id="adminBadge" class="admin-badge" style="display: none;">Admin Mode</span>
+                <button id="loginBtn" onclick="showLoginModal()" class="btn btn-primary">Admin Login</button>
+                <button id="logoutBtn" onclick="logout()" class="btn btn-secondary"
+                    style="display: none;">Logout</button>
+            </div>
+        </header>
+
+        <!-- Action Buttons -->
+        <div class="action-bar">
+            <button onclick="showAddTicketModal()" class="btn btn-success">Add New Ticket</button>
+            <button onclick="refreshTable()" class="btn btn-secondary">Refresh</button>
+            <div class="sort-controls">
+                <label for="sortBy">Sort by:</label>
+                <select id="sortBy" onchange="sortTable()">
+                    <option value="sr_no_desc">Serial No (Newest First)</option>
+                    <option value="sr_no_asc">Serial No (Oldest First)</option>
+                    <option value="date_desc">Date (Newest First)</option>
+                    <option value="date_asc">Date (Oldest First)</option>
+                    <option value="status">Status</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Main Tickets Table -->
+        <div class="table-container">
+            <table id="ticketsTable" class="tickets-table">
+                <thead>
+                    <tr>
+                        <th>Sr No</th>
+                        <th>Date Raised</th>
+                        <th>Issue</th>
+                        <th>Raised By</th>
+                        <th>Status</th>
+                        <th>Assigned To</th>
+                        <th id="commentsHeader" style="display: none;">Comments</th>
+                        <th id="actionsHeader" style="display: none;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="ticketsTableBody">
+                    <!-- Tickets will be populated here via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No tickets message -->
+        <div id="noTicketsMessage" class="no-tickets" style="display: none;">
+            <p>No tickets found. Click "Add New Ticket" to create your first ticket.</p>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLoginModal()">&times;</span>
+            <h2>Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeLoginModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Ticket Modal -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeTicketModal()">&times;</span>
+            <h2 id="ticketModalTitle">Add New Ticket</h2>
+            <form id="ticketForm">
+                <div class="form-group">
+                    <label for="dateRaised">Date Raised:</label>
+                    <input type="date" id="dateRaised" name="dateRaised" required>
+                </div>
+                <div class="form-group">
+                    <label for="issue">Issue:</label>
+                    <textarea id="issue" name="issue" rows="3" required placeholder="Describe the issue..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="raisedBy">Raised By:</label>
+                    <input type="text" id="raisedBy" name="raisedBy" required placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="status">Status:</label>
+                    <select id="status" name="status">
+                        <option value="In process">In process</option>
+                        <option value="Finished">Finished</option>
+                        <option value="Dormant">Dormant</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="assignedTo">Assigned To:</label>
+                    <input type="text" id="assignedTo" name="assignedTo" value="Veeresh" readonly>
+                </div>
+                <!-- Comments field - only show for admin -->
+                <div class="form-group" id="commentsGroup" style="display: none;">
+                    <label for="comments">Admin Comments:</label>
+                    <textarea id="comments" name="comments" rows="2" placeholder="Add admin comments..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitTicketBtn">Add Ticket</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeTicketModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div id="loadingIndicator" class="loading" style="display: none;">
+        <p>Loading...</p>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="messageContainer" class="message-container" style="display: none;">
+        <div id="messageContent" class="message"></div>
+    </div>
+
+    <!-- Pass server data to JavaScript -->
+    <script>
+        // Initialize with server data - avoiding Jinja2 templating issues
+        window.serverData = {
+            ticketsJson: '{{ tickets | tojson | safe }}',
+            isAdminJson: '{{ is_admin | tojson | safe }}'
+        };
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+</html>
