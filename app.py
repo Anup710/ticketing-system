@@ -13,8 +13,16 @@ TICKETS_FILE = 'tickets.json'
 def load_tickets():
     """Load tickets from JSON file"""
     if os.path.exists(TICKETS_FILE):
-        with open(TICKETS_FILE, 'r') as f:
-            return json.load(f)
+        try:
+            with open(TICKETS_FILE, 'r') as f:
+                content = f.read().strip()
+                if content:
+                    return json.loads(content)
+                else:
+                    return []
+        except (json.JSONDecodeError, FileNotFoundError):
+            # If file is corrupted or empty, start with empty list
+            return []
     return []
 
 def save_tickets(tickets):
@@ -62,19 +70,13 @@ def add_ticket():
     """Add a new ticket"""
     data = request.json
     
-    # Validate required fields
-    required_fields = ['issue', 'raised_by', 'date_raised']
-    for field in required_fields:
-        if not data.get(field):
-            return jsonify({'success': False, 'error': f'{field} is required'})
-    
     tickets = load_tickets()
     
     new_ticket = {
         'sr_no': get_next_sr_no(),
-        'date_raised': data['date_raised'],
-        'issue': data['issue'],
-        'raised_by': data['raised_by'],
+        'date_raised': data.get('date_raised') or datetime.now().date().isoformat(),
+        'issue': data.get('issue', ''),
+        'raised_by': data.get('raised_by', ''),
         'status': data.get('status', 'In process'),  # Default status
         'assigned_to': data.get('assigned_to', 'Veeresh'),  # Default assignee
         'comments': data.get('comments', ''),
