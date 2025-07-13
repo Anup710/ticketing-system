@@ -28,8 +28,6 @@
             <div class="sort-controls">
                 <label for="sortBy">Sort by:</label>
                 <select id="sortBy" onchange="sortTable()">
-                    <option value="sr_no_desc">Serial No (Newest First)</option>
-                    <option value="sr_no_asc">Serial No (Oldest First)</option>
                     <option value="date_desc">Date (Newest First)</option>
                     <option value="date_asc">Date (Oldest First)</option>
                     <option value="status">Status</option>
@@ -94,7 +92,7 @@
             <form id="ticketForm">
                 <div class="form-group">
                     <label for="dateRaised">Date Raised:</label>
-                    <input type="date" id="dateRaised" name="dateRaised" required>
+                    <input type="date" id="dateRaised" name="dateRaised" required readonly>
                 </div>
                 <div class="form-group">
                     <label for="issue">Issue:</label>

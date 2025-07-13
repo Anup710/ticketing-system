@@ -112,7 +112,7 @@ function loadTicketsTable() {
 
     noTicketsMessage.style.display = 'none';
 
-    // Sort tickets based on current selection
+    // Sort tickets based on current selection (default: newest date first)
     sortTickets();
 
     const tableRows = tickets.map(ticket => {
@@ -168,6 +168,7 @@ function sortTickets() {
                 };
                 return (statusOrder[a.status] || 4) - (statusOrder[b.status] || 4);
             default:
+                // Default to newest date first
                 return new Date(b.date_raised) - new Date(a.date_raised);
         }
     });

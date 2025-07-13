@@ -3,8 +3,8 @@
 # Admin credentials - modify these as needed
 # Format: {'username': 'password'}
 ADMIN_CREDENTIALS = {
-    'admin': 'password123',  # Change this password!
-    'veeresh': 'admin2024'   # Add more admin users as needed
+    'wcadmin': 'Wipro@!23*',  # Change this password!
+    'veeresh': 'admin2o25@98'   # Add more admin users as needed
 }
 
 # Application settings
