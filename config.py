@@ -1,4 +1,4 @@
-# store credentials to manage user access
+# Configuration file for the ticketing system
 
 # Admin credentials - modify these as needed
 # Format: {'username': 'password'}
@@ -8,7 +8,7 @@ ADMIN_CREDENTIALS = {
 }
 
 # Application settings
-APP_NAME = "Simple Ticketing System"
+APP_NAME = "WIN Hydraulics R&D Ticketing System"
 DEFAULT_ASSIGNEE = "Veeresh"
 
 # Status options for tickets

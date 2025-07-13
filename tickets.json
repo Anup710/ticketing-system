@@ -4,22 +4,22 @@
     "date_raised": "2025-07-13",
     "issue": "PDM name is incorrect for P14518",
     "raised_by": "Anup",
-    "status": "Finished",
+    "status": "Closed",
     "assigned_to": "Veeresh",
     "comments": "Changed and completed.",
     "created_at": "2025-07-13T12:29:38.866086",
-    "updated_at": "2025-07-13T12:30:34.601560"
+    "updated_at": "2025-07-13T13:19:20.744057"
   },
   {
     "sr_no": 2,
     "date_raised": "2025-07-14",
     "issue": "Windchill is not working for me",
     "raised_by": "Mahadev",
-    "status": "In process",
+    "status": "Closed",
     "assigned_to": "Veeresh",
     "comments": "on it",
     "created_at": "2025-07-13T12:31:43.757830",
-    "updated_at": "2025-07-13T12:40:39.896159"
+    "updated_at": "2025-07-13T13:19:35.948732"
   },
   {
     "sr_no": 3,
@@ -30,5 +30,25 @@
     "assigned_to": "Veeresh",
     "comments": "",
     "created_at": "2025-07-13T12:54:11.024884"
+  },
+  {
+    "sr_no": 4,
+    "date_raised": "2025-07-13",
+    "issue": "Creo is lagging",
+    "raised_by": "Joel",
+    "status": "Dormant",
+    "assigned_to": "Veeresh",
+    "comments": "",
+    "created_at": "2025-07-13T13:07:31.432126"
+  },
+  {
+    "sr_no": 5,
+    "date_raised": "2025-07-13",
+    "issue": "System unable to connect to wifi.",
+    "raised_by": "Joel",
+    "status": "In process",
+    "assigned_to": "Veeresh",
+    "comments": "",
+    "created_at": "2025-07-13T13:18:32.849721"
   }
 ]

@@ -27,8 +27,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set up event listeners
     setupEventListeners();
 
-    // Set today's date as default for new tickets
-    document.getElementById('dateRaised').valueAsDate = new Date();
+    // Set today's date as default for new tickets and make it readonly
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dateRaised').value = today;
 
     // Start auto-refresh (every 30 seconds)
     startAutoRefresh();
@@ -154,10 +155,6 @@ function sortTickets() {
 
     tickets.sort((a, b) => {
         switch (sortBy) {
-            case 'sr_no_desc':
-                return b.sr_no - a.sr_no;
-            case 'sr_no_asc':
-                return a.sr_no - b.sr_no;
             case 'date_desc':
                 return new Date(b.date_raised) - new Date(a.date_raised);
             case 'date_asc':
@@ -171,7 +168,7 @@ function sortTickets() {
                 };
                 return (statusOrder[a.status] || 4) - (statusOrder[b.status] || 4);
             default:
-                return b.sr_no - a.sr_no;
+                return new Date(b.date_raised) - new Date(a.date_raised);
         }
     });
 }
@@ -283,9 +280,17 @@ function showAddTicketModal() {
 
     // Reset form
     document.getElementById('ticketForm').reset();
-    document.getElementById('dateRaised').valueAsDate = new Date();
+
+    // Set today's date and make it readonly (always readonly for everyone)
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('dateRaised').value = today;
+    document.getElementById('dateRaised').readOnly = true;
+
     document.getElementById('assignedTo').value = 'Veeresh';
     document.getElementById('status').value = 'In process';
+
+    // Status field: readonly for regular users, editable for admin
+    document.getElementById('status').disabled = !isAdmin;
 
     // Show/hide comments field based on admin status
     const commentsGroup = document.getElementById('commentsGroup');
@@ -313,9 +318,12 @@ function editTicket(srNo) {
 
     // Populate form with ticket data
     document.getElementById('dateRaised').value = ticket.date_raised;
+    document.getElementById('dateRaised').readOnly = true; // Always readonly, even for admin
+
     document.getElementById('issue').value = ticket.issue;
     document.getElementById('raisedBy').value = ticket.raised_by;
     document.getElementById('status').value = ticket.status;
+    document.getElementById('status').disabled = false; // Admin can edit status in edit mode
     document.getElementById('assignedTo').value = ticket.assigned_to;
     document.getElementById('comments').value = ticket.comments || '';
 
