@@ -1,4 +1,4 @@
-// JS - to make website responsive 
+// WIN Hydraulics R&D Ticketing System JavaScript
 
 // Global variables
 let tickets = [];
@@ -39,20 +39,17 @@ function updateUIForAdminStatus() {
     const adminBadge = document.getElementById('adminBadge');
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
-    const commentsHeader = document.getElementById('commentsHeader');
     const actionsHeader = document.getElementById('actionsHeader');
 
     if (isAdmin) {
         adminBadge.style.display = 'inline-block';
         loginBtn.style.display = 'none';
         logoutBtn.style.display = 'inline-block';
-        commentsHeader.style.display = 'table-cell';
         actionsHeader.style.display = 'table-cell';
     } else {
         adminBadge.style.display = 'none';
         loginBtn.style.display = 'inline-block';
         logoutBtn.style.display = 'none';
-        commentsHeader.style.display = 'none';
         actionsHeader.style.display = 'none';
     }
 }
@@ -64,6 +61,11 @@ function setupEventListeners() {
 
     // Ticket form submission
     document.getElementById('ticketForm').addEventListener('submit', handleTicketSubmit);
+
+    // Add input validation listeners
+    document.getElementById('issue').addEventListener('input', validateIssueLength);
+    document.getElementById('raisedBy').addEventListener('input', validateNameField);
+    document.getElementById('dateRaised').addEventListener('change', validateDate);
 
     // Close modals when clicking outside
     window.addEventListener('click', function (event) {
@@ -117,7 +119,6 @@ function loadTicketsTable() {
         const formattedDate = formatDate(ticket.date_raised);
 
         let actionsHtml = '';
-        let commentsHtml = '';
 
         if (isAdmin) {
             actionsHtml = `
@@ -128,7 +129,6 @@ function loadTicketsTable() {
                     </div>
                 </td>
             `;
-            commentsHtml = `<td>${escapeHtml(ticket.comments || '')}</td>`;
         }
 
         return `
@@ -139,7 +139,7 @@ function loadTicketsTable() {
                 <td>${escapeHtml(ticket.raised_by)}</td>
                 <td><span class="status-badge ${statusClass}">${ticket.status}</span></td>
                 <td>${escapeHtml(ticket.assigned_to)}</td>
-                ${commentsHtml}
+                <td>${escapeHtml(ticket.comments || '')}</td>
                 ${actionsHtml}
             </tr>
         `;
@@ -327,9 +327,94 @@ function closeTicketModal() {
     currentEditTicket = null;
 }
 
+// Validation functions
+function validateDate() {
+    const dateInput = document.getElementById('dateRaised');
+    const selectedDate = new Date(dateInput.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Reset time to start of day
+
+    if (selectedDate < today) {
+        showMessage('Cannot select past dates. Please select today or a future date.', 'error');
+        dateInput.value = today.toISOString().split('T')[0]; // Reset to today
+        return false;
+    }
+    return true;
+}
+
+function validateIssueLength() {
+    const issueInput = document.getElementById('issue');
+    const charCount = issueInput.value.length;
+    const maxLength = 500;
+
+    // Create or update character counter
+    let counter = document.getElementById('issueCharCounter');
+    if (!counter) {
+        counter = document.createElement('small');
+        counter.id = 'issueCharCounter';
+        counter.style.color = '#666';
+        counter.style.fontSize = '12px';
+        issueInput.parentNode.appendChild(counter);
+    }
+
+    counter.textContent = `${charCount}/${maxLength} characters`;
+
+    if (charCount > maxLength) {
+        counter.style.color = '#e74c3c';
+        issueInput.value = issueInput.value.substring(0, maxLength);
+        showMessage('Issue description cannot exceed 500 characters.', 'error');
+        return false;
+    } else {
+        counter.style.color = '#666';
+    }
+    return true;
+}
+
+function validateNameField() {
+    const nameInput = document.getElementById('raisedBy');
+    const name = nameInput.value;
+    const maxLength = 20;
+
+    // Create or update character counter
+    let counter = document.getElementById('nameCharCounter');
+    if (!counter) {
+        counter = document.createElement('small');
+        counter.id = 'nameCharCounter';
+        counter.style.color = '#666';
+        counter.style.fontSize = '12px';
+        nameInput.parentNode.appendChild(counter);
+    }
+
+    counter.textContent = `${name.length}/${maxLength} characters`;
+
+    if (name.length > maxLength) {
+        counter.style.color = '#e74c3c';
+        nameInput.value = name.substring(0, maxLength);
+        showMessage('Name cannot exceed 20 characters.', 'error');
+        return false;
+    }
+
+    // Check for valid characters (letters, spaces, periods, hyphens, apostrophes)
+    const validNameRegex = /^[a-zA-Z\s\.\-']*$/;
+    if (name && !validNameRegex.test(name)) {
+        counter.style.color = '#e74c3c';
+        counter.textContent = 'Only letters, spaces, periods, hyphens, and apostrophes allowed';
+        return false;
+    } else {
+        counter.style.color = '#666';
+    }
+
+    return true;
+}
+
 // Handle ticket form submission
 async function handleTicketSubmit(event) {
     event.preventDefault();
+
+    // Perform client-side validations
+    if (!validateDate() || !validateIssueLength() || !validateNameField()) {
+        return;
+    }
 
     const formData = {
         date_raised: document.getElementById('dateRaised').value,
@@ -339,12 +424,6 @@ async function handleTicketSubmit(event) {
         assigned_to: document.getElementById('assignedTo').value.trim(),
         comments: document.getElementById('comments').value.trim()
     };
-
-    // Validate required fields
-    if (!formData.issue || !formData.raised_by) {
-        showMessage('Please fill in all required fields.', 'error');
-        return;
-    }
 
     showLoading();
 
