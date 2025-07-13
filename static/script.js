@@ -163,7 +163,13 @@ function sortTickets() {
             case 'date_asc':
                 return new Date(a.date_raised) - new Date(b.date_raised);
             case 'status':
-                return a.status.localeCompare(b.status);
+                // Custom status order: In process, Dormant, Closed
+                const statusOrder = {
+                    'In process': 1,
+                    'Dormant': 2,
+                    'Closed': 3
+                };
+                return (statusOrder[a.status] || 4) - (statusOrder[b.status] || 4);
             default:
                 return b.sr_no - a.sr_no;
         }

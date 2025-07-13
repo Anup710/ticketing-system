@@ -20,5 +20,15 @@
     "comments": "on it",
     "created_at": "2025-07-13T12:31:43.757830",
     "updated_at": "2025-07-13T12:40:39.896159"
+  },
+  {
+    "sr_no": 3,
+    "date_raised": "2025-07-13",
+    "issue": "Need a new monitor",
+    "raised_by": "John Doe",
+    "status": "In process",
+    "assigned_to": "Veeresh",
+    "comments": "",
+    "created_at": "2025-07-13T12:54:11.024884"
   }
 ]

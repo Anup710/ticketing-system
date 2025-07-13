@@ -14,8 +14,8 @@ DEFAULT_ASSIGNEE = "Veeresh"
 # Status options for tickets
 STATUS_OPTIONS = [
     'In process',
-    'Finished', 
-    'Dormant'
+    'Dormant', 
+    'Closed'
 ]
 
 # You can add more configuration options here as the system grows
