@@ -121,18 +121,33 @@ function loadTicketsTable() {
     const tableBody = document.getElementById('ticketsTableBody');
     const noTicketsMessage = document.getElementById('noTicketsMessage');
     
-    if (tickets.length === 0) {
+    // Filter tickets based on user type
+    let displayTickets = tickets;
+    
+    if (isLoggedIn && !isAdmin) {
+        // Regular users: only show their own tickets
+        displayTickets = tickets.filter(ticket => ticket.raised_by === currentUser);
+    }
+    // Admin users: see all tickets (no filtering)
+    // Not logged in: see all tickets (no filtering)
+    
+    if (displayTickets.length === 0) {
         tableBody.innerHTML = '';
         noTicketsMessage.style.display = 'block';
+        // Update message based on context
+        const noTicketsText = isLoggedIn && !isAdmin ? 
+            'You have not raised any tickets yet. Click "Add New Ticket" to create your first ticket.' :
+            'No tickets found. Click "Add New Ticket" to create your first ticket.';
+        noTicketsMessage.querySelector('p').textContent = noTicketsText;
         return;
     }
     
     noTicketsMessage.style.display = 'none';
     
-    // Sort tickets based on current selection (default: newest date first)
-    sortTickets();
+    // Sort the filtered tickets based on current selection (default: newest date first)
+    sortTickets(displayTickets);
     
-    const tableRows = tickets.map(ticket => {
+    const tableRows = displayTickets.map(ticket => {
         const statusClass = `status-${ticket.status.toLowerCase().replace(' ', '-')}`;
         const formattedDate = formatDate(ticket.date_raised);
         
@@ -167,10 +182,10 @@ function loadTicketsTable() {
 }
 
 // Sort tickets based on selected option
-function sortTickets() {
+function sortTickets(ticketsToSort = tickets) {
     const sortBy = document.getElementById('sortBy').value;
     
-    tickets.sort((a, b) => {
+    ticketsToSort.sort((a, b) => {
         switch (sortBy) {
             case 'date_desc':
                 return new Date(b.date_raised) - new Date(a.date_raised);
