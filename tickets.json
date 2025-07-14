@@ -50,5 +50,16 @@
     "assigned_to": "Veeresh",
     "comments": "",
     "created_at": "2025-07-13T13:18:32.849721"
+  },
+  {
+    "sr_no": 6,
+    "date_raised": "2025-07-14",
+    "issue": "WinDD not working",
+    "raised_by": "John",
+    "status": "Closed",
+    "assigned_to": "Veeresh",
+    "comments": "completed",
+    "created_at": "2025-07-14T09:41:20.535549",
+    "updated_at": "2025-07-14T09:42:14.918796"
   }
 ]

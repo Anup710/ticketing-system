@@ -1,0 +1,12 @@
+On USERID:
+- User id and custom password. need not be same as the windows one. 
+- 'raised by' is set to user id automatically 
+- user id based spam checks (<2 tickets per hour)
+
+LOGIN:
+- userid/pw must be prompted for login as the webpage is loaded. 
+
+DATE:
+- ticket closing date also add. 
+- request veeresh to manually enter date before commenting while the ticket is still open. 
+

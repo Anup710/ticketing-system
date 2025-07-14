@@ -1,10 +1,25 @@
 # Configuration file for the ticketing system
 
+# Regular user credentials - modify these as needed
+# Format: {'username': 'password'}
+REGULAR_USERS = {
+    'john_doe': 'user123',
+    'jane_smith': 'pass456',
+    'mike_wilson': 'secure789',
+    'sarah_chen': 'mypass321',
+    'raj_patel': 'password987',
+    'lisa_brown': 'secure456',
+    'tom_garcia': 'user654',
+    'amy_jones': 'pass123',
+    'david_kim': 'secure321',
+    'emma_davis': 'user789'
+}
+
 # Admin credentials - modify these as needed
 # Format: {'username': 'password'}
 ADMIN_CREDENTIALS = {
-    'wcadmin': 'Wipro@!23*',  # Change this password!
-    'veeresh': 'admin2o25@98'   # Add more admin users as needed
+    'admin': 'password123',  # Change this password!
+    'veeresh': 'admin2024'   # Add more admin users as needed
 }
 
 # Application settings

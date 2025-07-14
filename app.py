@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, session
 import json
 import os
 from datetime import datetime
-from config import ADMIN_CREDENTIALS
+from config import ADMIN_CREDENTIALS, REGULAR_USERS
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-change-this'  # Change this in production
@@ -42,27 +42,41 @@ def index():
     """Main page - displays the ticketing interface"""
     tickets = load_tickets()
     is_admin = session.get('is_admin', False)
-    return render_template('index.html', tickets=tickets, is_admin=is_admin)
+    is_logged_in = session.get('username') is not None
+    username = session.get('username', '')
+    return render_template('index.html', tickets=tickets, is_admin=is_admin, 
+                         is_logged_in=is_logged_in, username=username)
 
 @app.route('/login', methods=['POST'])
 def login():
-    """Admin login endpoint"""
+    """User/Admin login endpoint"""
     data = request.json
     username = data.get('username')
     password = data.get('password')
     
+    # Check if admin
     if username in ADMIN_CREDENTIALS and ADMIN_CREDENTIALS[username] == password:
         session['is_admin'] = True
         session['username'] = username
-        return jsonify({'success': True})
+        session['user_type'] = 'admin'
+        return jsonify({'success': True, 'user_type': 'admin', 'username': username})
+    
+    # Check if regular user
+    elif username in REGULAR_USERS and REGULAR_USERS[username] == password:
+        session['is_admin'] = False
+        session['username'] = username
+        session['user_type'] = 'user'
+        return jsonify({'success': True, 'user_type': 'user', 'username': username})
+    
     else:
         return jsonify({'success': False, 'error': 'Invalid credentials'})
 
 @app.route('/logout')
 def logout():
-    """Admin logout endpoint"""
+    """User/Admin logout endpoint"""
     session.pop('is_admin', None)
     session.pop('username', None)
+    session.pop('user_type', None)
     return jsonify({'success': True})
 
 @app.route('/add_ticket', methods=['POST'])
@@ -128,7 +142,12 @@ def delete_ticket(sr_no):
 def get_tickets():
     """Get all tickets (API endpoint)"""
     tickets = load_tickets()
-    return jsonify({'tickets': tickets, 'is_admin': session.get('is_admin', False)})
+    return jsonify({
+        'tickets': tickets, 
+        'is_admin': session.get('is_admin', False),
+        'is_logged_in': session.get('username') is not None,
+        'username': session.get('username', '')
+    })
 
 if __name__ == '__main__':
     # Create empty tickets file if it doesn't exist
