@@ -12,7 +12,8 @@ REGULAR_USERS = {
     'tom_garcia': 'user654',
     'amy_jones': 'pass123',
     'david_kim': 'secure321',
-    'emma_davis': 'user789'
+    'emma_davis': 'user789',
+    'Chandrashekhar N': "Smaoa@786!"
 }
 
 # Admin credentials - modify these as needed

@@ -120,6 +120,7 @@ function stopAutoRefresh() {
 function loadTicketsTable() {
     const tableBody = document.getElementById('ticketsTableBody');
     const noTicketsMessage = document.getElementById('noTicketsMessage');
+    const ticketCount = document.getElementById('ticketCount');
     
     // Filter tickets based on user type
     let displayTickets = tickets;
@@ -131,13 +132,19 @@ function loadTicketsTable() {
     // Admin users: see all tickets (no filtering)
     // Not logged in: see all tickets (no filtering)
     
+    // Update ticket count
+    const count = displayTickets.length;
+    if (ticketCount) {
+        ticketCount.textContent = `${count} ticket${count !== 1 ? 's' : ''}`;
+    }
+    
     if (displayTickets.length === 0) {
         tableBody.innerHTML = '';
         noTicketsMessage.style.display = 'block';
         // Update message based on context
         const noTicketsText = isLoggedIn && !isAdmin ? 
-            'You have not raised any tickets yet. Click "Add New Ticket" to create your first ticket.' :
-            'No tickets found. Click "Add New Ticket" to create your first ticket.';
+            'You have not raised any tickets yet. Click "New Ticket" to create your first ticket.' :
+            'No tickets found. Click "New Ticket" to create your first ticket.';
         noTicketsMessage.querySelector('p').textContent = noTicketsText;
         return;
     }
@@ -157,8 +164,12 @@ function loadTicketsTable() {
             actionsHtml = `
                 <td>
                     <div class="action-buttons">
-                        <button class="btn btn-warning" onclick="editTicket(${ticket.sr_no})">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteTicket(${ticket.sr_no})">Delete</button>
+                        <button class="btn btn-warning" onclick="editTicket(${ticket.sr_no})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="btn btn-danger" onclick="deleteTicket(${ticket.sr_no})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
                     </div>
                 </td>
             `;
@@ -166,13 +177,23 @@ function loadTicketsTable() {
         
         return `
             <tr>
-                <td>${ticket.sr_no}</td>
+                <td><strong>#${ticket.sr_no}</strong></td>
                 <td>${formattedDate}</td>
                 <td>${escapeHtml(ticket.issue)}</td>
-                <td>${escapeHtml(ticket.raised_by)}</td>
+                <td>
+                    <div class="user-cell">
+                        <i class="fas fa-user"></i>
+                        ${escapeHtml(ticket.raised_by)}
+                    </div>
+                </td>
                 <td><span class="status-badge ${statusClass}">${ticket.status}</span></td>
-                <td>${escapeHtml(ticket.assigned_to)}</td>
-                <td>${escapeHtml(ticket.comments || '')}</td>
+                <td>
+                    <div class="user-cell">
+                        <i class="fas fa-user-tie"></i>
+                        ${escapeHtml(ticket.assigned_to)}
+                    </div>
+                </td>
+                <td>${escapeHtml(ticket.comments || '-')}</td>
                 ${actionsHtml}
             </tr>
         `;

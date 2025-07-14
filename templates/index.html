@@ -3,145 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Ticketing System</title>
+    <title>WIN Hydraulics R&D Ticketing System</title>
     <link rel="stylesheet" href="../static/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- Header Section -->
+    <div class="app-container">
+        <!-- Modern Header with Glassmorphism Effect -->
         <header class="header">
-            <h1>WIN Hydraulics R&D Ticketing System</h1>
-            <div class="header-actions">
-                <div id="userInfo" style="display: none;">
-                    <span id="welcomeMessage" class="welcome-message"></span>
-                    <span id="adminBadge" class="admin-badge" style="display: none;">Admin</span>
-                    <span id="userBadge" class="user-badge" style="display: none;">User</span>
+            <div class="header-content">
+                <div class="brand-section">
+                    <div class="brand-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="brand-text">
+                        <h1>WIN Hydraulics R&D</h1>
+                        <span class="brand-subtitle">Ticketing System</span>
+                    </div>
                 </div>
-                <button id="loginBtn" onclick="showLoginModal()" class="btn btn-primary">Login</button>
-                <button id="logoutBtn" onclick="logout()" class="btn btn-secondary" style="display: none;">Logout</button>
+                
+                <div class="header-actions">
+                    <div id="userInfo" class="user-info" style="display: none;">
+                        <div class="user-avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <span id="welcomeMessage" class="user-name"></span>
+                            <div class="user-badges">
+                                <span id="adminBadge" class="badge badge-admin" style="display: none;">
+                                    <i class="fas fa-crown"></i> Admin
+                                </span>
+                                <span id="userBadge" class="badge badge-user" style="display: none;">
+                                    <i class="fas fa-user"></i> User
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="loginBtn" onclick="showLoginModal()" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button id="logoutBtn" onclick="logout()" class="btn btn-outline" style="display: none;">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
             </div>
         </header>
 
-        <!-- Action Buttons -->
-        <div class="action-bar">
-            <button onclick="showAddTicketModal()" class="btn btn-success">Add New Ticket</button>
-            <button onclick="refreshTable()" class="btn btn-secondary">Refresh</button>
-            <div class="sort-controls">
-                <label for="sortBy">Sort by:</label>
-                <select id="sortBy" onchange="sortTable()">
-                    <option value="date_desc">Date (Newest First)</option>
-                    <option value="date_asc">Date (Oldest First)</option>
-                    <option value="status">Status</option>
-                </select>
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="panel-left">
+                    <button onclick="showAddTicketModal()" class="btn btn-success btn-with-icon">
+                        <i class="fas fa-plus"></i>
+                        <span>New Ticket</span>
+                    </button>
+                    <button onclick="refreshTable()" class="btn btn-ghost btn-with-icon">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+                
+                <div class="panel-right">
+                    <div class="sort-container">
+                        <label for="sortBy">
+                            <i class="fas fa-sort"></i> Sort by
+                        </label>
+                        <select id="sortBy" onchange="sortTable()" class="sort-select">
+                            <option value="date_desc">Date (Newest First)</option>
+                            <option value="date_asc">Date (Oldest First)</option>
+                            <option value="status">Status Priority</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tickets Table with Card Design -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h2><i class="fas fa-ticket-alt"></i> Support Tickets</h2>
+                    <div class="table-stats">
+                        <span id="ticketCount" class="stat-badge">0 tickets</span>
+                    </div>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table id="ticketsTable" class="modern-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> ID</th>
+                                <th><i class="fas fa-calendar"></i> Date</th>
+                                <th><i class="fas fa-exclamation-circle"></i> Issue</th>
+                                <th><i class="fas fa-user"></i> Raised By</th>
+                                <th><i class="fas fa-flag"></i> Status</th>
+                                <th><i class="fas fa-user-tie"></i> Assigned To</th>
+                                <th><i class="fas fa-comments"></i> Comments</th>
+                                <th id="actionsHeader" style="display: none;"><i class="fas fa-cog"></i> Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ticketsTableBody">
+                            <!-- Tickets will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="noTicketsMessage" class="empty-state" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-inbox"></i>
+                </div>
+                <h3>No tickets found</h3>
+                <p>Click "New Ticket" to create your first support ticket.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Login Modal with Modern Design -->
+    <div id="loginModal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modern-modal">
+            <div class="modal-header">
+                <h2><i class="fas fa-lock"></i> User Authentication</h2>
+                <button class="modal-close" onclick="closeLoginModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <p class="login-instruction">Enter your credentials to access the ticketing system</p>
+                <form id="loginForm" class="modern-form">
+                    <div class="form-group">
+                        <label for="username">
+                            <i class="fas fa-user"></i> Username
+                        </label>
+                        <input type="text" id="username" name="username" required 
+                               placeholder="Enter your username" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <input type="password" id="password" name="password" required 
+                               placeholder="Enter your password" class="form-input">
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-full">
+                            <i class="fas fa-sign-in-alt"></i> Sign In
+                        </button>
+                        <button type="button" class="btn btn-ghost btn-full" onclick="closeLoginModal()">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-
-        <!-- Main Tickets Table -->
-        <div class="table-container">
-            <table id="ticketsTable" class="tickets-table">
-                <thead>
-                    <tr>
-                        <th>Sr No</th>
-                        <th>Date Raised</th>
-                        <th>Issue</th>
-                        <th>Raised By</th>
-                        <th>Status</th>
-                        <th>Assigned To</th>
-                        <th>Comments</th>
-                        <th id="actionsHeader" style="display: none;">Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="ticketsTableBody">
-                    <!-- Tickets will be populated here via JavaScript -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- No tickets message -->
-        <div id="noTicketsMessage" class="no-tickets" style="display: none;">
-            <p>No tickets found. Click "Add New Ticket" to create your first ticket.</p>
-        </div>
     </div>
 
-    <!-- Login Modal -->
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLoginModal()">&times;</span>
-            <h2>User Login</h2>
-            <p class="login-instruction">Enter your credentials to access the ticketing system</p>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">Username:</label>
-                    <input type="text" id="username" name="username" required placeholder="Enter your username">
-                </div>
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input type="password" id="password" name="password" required placeholder="Enter your password">
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeLoginModal()">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add/Edit Ticket Modal -->
+    <!-- Ticket Modal with Enhanced Design -->
     <div id="ticketModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeTicketModal()">&times;</span>
-            <h2 id="ticketModalTitle">Add New Ticket</h2>
-            <form id="ticketForm">
-                <div class="form-group">
-                    <label for="dateRaised">Date Raised:</label>
-                    <input type="date" id="dateRaised" name="dateRaised" required readonly>
-                </div>
-                <div class="form-group">
-                    <label for="issue">Issue:</label>
-                    <textarea id="issue" name="issue" rows="3" required placeholder="Describe the issue..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="raisedBy">Raised By:</label>
-                    <input type="text" id="raisedBy" name="raisedBy" required placeholder="Your name">
-                </div>
-                <div class="form-group">
-                    <label for="status">Status:</label>
-                    <select id="status" name="status">
-                        <option value="In process">In process</option>
-                        <option value="Dormant">Dormant</option>
-                        <option value="Closed">Closed</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="assignedTo">Assigned To:</label>
-                    <input type="text" id="assignedTo" name="assignedTo" value="Veeresh" readonly>
-                </div>
-                <!-- Comments field - only show for admin -->
-                <div class="form-group" id="commentsGroup" style="display: none;">
-                    <label for="comments">Admin Comments:</label>
-                    <textarea id="comments" name="comments" rows="2" placeholder="Add admin comments..."></textarea>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary" id="submitTicketBtn">Add Ticket</button>
-                    <button type="button" class="btn btn-secondary" onclick="closeTicketModal()">Cancel</button>
-                </div>
-            </form>
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modern-modal large-modal">
+            <div class="modal-header">
+                <h2 id="ticketModalTitle"><i class="fas fa-plus-circle"></i> Add New Ticket</h2>
+                <button class="modal-close" onclick="closeTicketModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="ticketForm" class="modern-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="dateRaised">
+                                <i class="fas fa-calendar"></i> Date Raised
+                            </label>
+                            <input type="date" id="dateRaised" name="dateRaised" required readonly class="form-input">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="raisedBy">
+                                <i class="fas fa-user"></i> Raised By
+                            </label>
+                            <input type="text" id="raisedBy" name="raisedBy" required 
+                                   placeholder="Your name" class="form-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="issue">
+                            <i class="fas fa-exclamation-circle"></i> Issue Description
+                        </label>
+                        <textarea id="issue" name="issue" rows="4" required 
+                                  placeholder="Describe the issue in detail..." class="form-textarea"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="status">
+                                <i class="fas fa-flag"></i> Status
+                            </label>
+                            <select id="status" name="status" class="form-select">
+                                <option value="In process">In Process</option>
+                                <option value="Dormant">Dormant</option>
+                                <option value="Closed">Closed</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="assignedTo">
+                                <i class="fas fa-user-tie"></i> Assigned To
+                            </label>
+                            <input type="text" id="assignedTo" name="assignedTo" value="Veeresh" class="form-input">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="commentsGroup" style="display: none;">
+                        <label for="comments">
+                            <i class="fas fa-comments"></i> Admin Comments
+                        </label>
+                        <textarea id="comments" name="comments" rows="3" 
+                                  placeholder="Add admin comments..." class="form-textarea"></textarea>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-success btn-full" id="submitTicketBtn">
+                            <i class="fas fa-check"></i> Add Ticket
+                        </button>
+                        <button type="button" class="btn btn-ghost btn-full" onclick="closeTicketModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Loading indicator -->
-    <div id="loadingIndicator" class="loading" style="display: none;">
-        <p>Loading...</p>
+    <!-- Loading Spinner -->
+    <div id="loadingIndicator" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Processing...</p>
+        </div>
     </div>
 
-    <!-- Success/Error Messages -->
-    <div id="messageContainer" class="message-container" style="display: none;">
-        <div id="messageContent" class="message"></div>
+    <!-- Toast Notifications -->
+    <div id="messageContainer" class="toast-container" style="display: none;">
+        <div id="messageContent" class="toast"></div>
     </div>
 
-    <!-- Pass server data to JavaScript -->
+    <!-- Scripts -->
     <script>
-        // Initialize with server data - avoiding Jinja2 templating issues
         window.serverData = {
             ticketsJson: '{{ tickets | tojson | safe }}',
             isAdminJson: '{{ is_admin | tojson | safe }}',
