@@ -346,8 +346,8 @@ function showAddTicketModal() {
     }
     
     currentEditTicket = null;
-    document.getElementById('ticketModalTitle').textContent = 'Add New Ticket';
-    document.getElementById('submitTicketBtn').textContent = 'Add Ticket';
+    document.getElementById('ticketModalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add New Ticket';
+    document.getElementById('submitTicketBtn').innerHTML = '<i class="fas fa-check"></i> Add Ticket';
     
     // Reset form
     document.getElementById('ticketForm').reset();
@@ -361,11 +361,15 @@ function showAddTicketModal() {
     document.getElementById('raisedBy').value = currentUser;
     document.getElementById('raisedBy').readOnly = true;
     
-    document.getElementById('assignedTo').value = 'Veeresh';
+    // Set default values
+    document.getElementById('assignedTo').value = 'Veeresh'; // Default to Veeresh
     document.getElementById('status').value = 'In process';
     
     // Status field: readonly for regular users, editable for admin
     document.getElementById('status').disabled = !isAdmin;
+    
+    // Assigned To field: readonly for regular users, editable for admin
+    document.getElementById('assignedTo').disabled = !isAdmin;
     
     // Show/hide comments field based on admin status
     const commentsGroup = document.getElementById('commentsGroup');
@@ -374,9 +378,6 @@ function showAddTicketModal() {
     } else {
         commentsGroup.style.display = 'none';
     }
-    
-    // Make assignedTo readonly for regular users
-    document.getElementById('assignedTo').readOnly = !isAdmin;
     
     document.getElementById('ticketModal').style.display = 'block';
     document.getElementById('issue').focus();
@@ -388,8 +389,8 @@ function editTicket(srNo) {
     if (!ticket) return;
     
     currentEditTicket = ticket;
-    document.getElementById('ticketModalTitle').textContent = 'Edit Ticket';
-    document.getElementById('submitTicketBtn').textContent = 'Update Ticket';
+    document.getElementById('ticketModalTitle').innerHTML = '<i class="fas fa-edit"></i> Edit Ticket';
+    document.getElementById('submitTicketBtn').innerHTML = '<i class="fas fa-save"></i> Update Ticket';
     
     // Populate form with ticket data
     document.getElementById('dateRaised').value = ticket.date_raised;
@@ -401,7 +402,10 @@ function editTicket(srNo) {
     
     document.getElementById('status').value = ticket.status;
     document.getElementById('status').disabled = false; // Admin can edit status in edit mode
+    
     document.getElementById('assignedTo').value = ticket.assigned_to;
+    document.getElementById('assignedTo').disabled = false; // Admin can edit assignee in edit mode
+    
     document.getElementById('comments').value = ticket.comments || '';
     
     // Show comments field for admin

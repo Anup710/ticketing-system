@@ -1,7 +1,7 @@
 # Configuration file for the ticketing system
 
-# Regular user credentials - modify these as needed
-# Format: {'username': 'password'}
+# Regular user credentials 
+# dict: {'username': 'password'}
 REGULAR_USERS = {
     'john_doe': 'user123',
     'jane_smith': 'pass456',
@@ -16,8 +16,8 @@ REGULAR_USERS = {
     'Chandrashekhar N': "Smaoa@786!"
 }
 
-# Admin credentials - modify these as needed
-# Format: {'username': 'password'}
+# Admin credentials 
+# dict: {'username': 'password'}
 ADMIN_CREDENTIALS = {
     'admin': 'password123',  # Change this password!
     'veeresh': 'admin2024'   # Add more admin users as needed
@@ -26,6 +26,13 @@ ADMIN_CREDENTIALS = {
 # Application settings
 APP_NAME = "WIN Hydraulics R&D Ticketing System"
 DEFAULT_ASSIGNEE = "Veeresh"
+
+# responders to the ticket 
+ASSIGNEE_OPTIONS = [
+    'Veeresh',
+    'Manoj'
+]
+
 
 # Status options for tickets
 STATUS_OPTIONS = [

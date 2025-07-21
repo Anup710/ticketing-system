@@ -46,10 +46,25 @@
 }
 
 /* Reset and Base Styles */
+/* Prevent any element from causing layout shifts */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    /* Improve performance */
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent transforms on scrollable areas */
+.table-wrapper *:hover,
+.table-wrapper * {
+    transform: none !important;
+}
+
+/* Additional stability improvements */
+html {
+    /* Prevent horizontal scrolling issues */
+    overflow-x: hidden;
 }
 
 body {
@@ -60,6 +75,11 @@ body {
     line-height: 1.6;
     font-size: 14px;
     overflow-x: hidden;
+    /* Improve rendering performance */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    /* Prevent layout shifts */
+    scroll-behavior: smooth;
 }
 
 .app-container {
@@ -195,10 +215,12 @@ body {
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
     text-decoration: none;
     position: relative;
     overflow: hidden;
+    /* Prevent transform glitches */
+    will-change: background-color, box-shadow;
 }
 
 .btn-primary {
@@ -358,6 +380,8 @@ body {
     box-shadow: var(--shadow-xl);
     border: 1px solid rgba(255, 255, 255, 0.2);
     overflow: hidden;
+    /* Prevent layout shifts */
+    contain: layout style paint;
 }
 
 .table-header {
@@ -396,7 +420,40 @@ body {
 
 .table-wrapper {
     overflow-x: auto;
+    overflow-y: auto;
     max-height: 70vh;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Prevent content jumping */
+    scrollbar-gutter: stable;
+    /* Custom scrollbar styling */
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-300) transparent;
+}
+
+/* Webkit scrollbar styling */
+.table-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--gray-400);
+}
+
+.table-wrapper::-webkit-scrollbar-corner {
+    background: var(--gray-100);
 }
 
 .modern-table {
@@ -430,12 +487,13 @@ body {
 }
 
 .modern-table tr {
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease;
+    /* Remove transform animations that cause glitching */
 }
 
 .modern-table tr:hover {
     background: linear-gradient(135deg, #f8fafc, #f1f5f9);
-    transform: scale(1.001);
+    /* Removed transform: scale(1.001) - this was causing the glitch */
 }
 
 /* Status Badges with Modern Design */
@@ -596,7 +654,7 @@ body {
 .modal-close:hover {
     background: var(--gray-200);
     color: var(--gray-700);
-    transform: scale(1.05);
+    /* Removed transform: scale(1.05) */
 }
 
 .modal-body {
@@ -661,7 +719,7 @@ body {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    transform: translateY(-1px);
+    /* Removed transform: translateY(-1px) */
 }
 
 .form-input:disabled,

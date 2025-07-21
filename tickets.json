@@ -41,17 +41,6 @@
     "created_at": "2025-07-13T13:18:32.849721"
   },
   {
-    "sr_no": 6,
-    "date_raised": "2025-07-14",
-    "issue": "WinDD not working",
-    "raised_by": "John",
-    "status": "Closed",
-    "assigned_to": "Veeresh",
-    "comments": "completed",
-    "created_at": "2025-07-14T09:41:20.535549",
-    "updated_at": "2025-07-14T09:42:14.918796"
-  },
-  {
     "sr_no": 7,
     "date_raised": "2025-07-14",
     "issue": "The printer has run out of paper!",
@@ -61,5 +50,16 @@
     "comments": "",
     "created_at": "2025-07-14T11:17:19.625651",
     "updated_at": "2025-07-14T11:52:54.977011"
+  },
+  {
+    "sr_no": 8,
+    "date_raised": "2025-07-15",
+    "issue": "WINDD drawinf for P14156 not opening",
+    "raised_by": "Chandrashekhar N",
+    "status": "In process",
+    "assigned_to": "Manoj",
+    "comments": "Manoj will resolve by 23rd July.",
+    "created_at": "2025-07-15T09:40:21.590197",
+    "updated_at": "2025-07-21T11:01:28.327051"
   }
 ]
