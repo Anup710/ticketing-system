@@ -85,6 +85,16 @@ function setupEventListeners() {
     // Ticket form submission
     document.getElementById('ticketForm').addEventListener('submit', handleTicketSubmit);
     
+    // File input change listeners
+    for (let i = 0; i < 3; i++) {
+        const fileInput = document.getElementById(`attachment_${i}`);
+        if (fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                handleFileSelection(e, i);
+            });
+        }
+    }
+    
     // Close modals when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target.classList.contains('modal')) {
@@ -194,6 +204,7 @@ function loadTicketsTable() {
                     </div>
                 </td>
                 <td>${escapeHtml(ticket.comments || '-')}</td>
+                <td>${createAttachmentsDisplay(ticket.attachments || [])}</td>
                 ${actionsHtml}
             </tr>
         `;
@@ -227,7 +238,85 @@ function sortTickets(ticketsToSort = tickets) {
     });
 }
 
-// Sort table when dropdown changes
+// Handle file selection and display filename
+function handleFileSelection(event, index) {
+    const file = event.target.files[0];
+    const fileNameSpan = document.getElementById(`fileName_${index}`);
+    
+    if (file) {
+        // Check file size (25MB limit)
+        const maxSize = 25 * 1024 * 1024; // 25MB in bytes
+        if (file.size > maxSize) {
+            showMessage('File size exceeds 25MB limit. Please choose a smaller file.', 'error');
+            event.target.value = ''; // Clear the input
+            fileNameSpan.textContent = '';
+            return;
+        }
+        
+        // Display filename and size
+        const fileSize = formatFileSize(file.size);
+        fileNameSpan.textContent = `${file.name} (${fileSize})`;
+        fileNameSpan.style.color = 'var(--wipro-primary)';
+    } else {
+        fileNameSpan.textContent = '';
+    }
+}
+
+// Format file size for display
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+// Get file icon based on extension
+function getFileIcon(filename) {
+    if (!filename) return 'fas fa-file';
+    
+    const ext = filename.split('.').pop().toLowerCase();
+    const iconMap = {
+        // Images
+        'jpg': 'fas fa-file-image', 'jpeg': 'fas fa-file-image', 'png': 'fas fa-file-image', 
+        'gif': 'fas fa-file-image', 'bmp': 'fas fa-file-image', 'tiff': 'fas fa-file-image',
+        // Documents
+        'pdf': 'fas fa-file-pdf',
+        'doc': 'fas fa-file-word', 'docx': 'fas fa-file-word', 'rtf': 'fas fa-file-word', 'odt': 'fas fa-file-word',
+        'xls': 'fas fa-file-excel', 'xlsx': 'fas fa-file-excel',
+        'ppt': 'fas fa-file-powerpoint', 'pptx': 'fas fa-file-powerpoint',
+        'txt': 'fas fa-file-alt'
+    };
+    
+    return iconMap[ext] || 'fas fa-file';
+}
+
+// Create attachments display for table
+function createAttachmentsDisplay(attachments) {
+    if (!attachments || attachments.length === 0) {
+        return '<span class="no-attachments">No attachments</span>';
+    }
+    
+    const attachmentItems = attachments.map(attachment => {
+        const icon = getFileIcon(attachment.original_name);
+        const fileSize = formatFileSize(attachment.file_size);
+        
+        return `
+            <div class="file-attachment-item">
+                <i class="${icon}"></i>
+                <a href="/download_file/${attachment.stored_name}" 
+                   class="file-attachment-link" 
+                   target="_blank" 
+                   title="Download ${attachment.original_name}">
+                    ${attachment.original_name}
+                </a>
+                <span class="file-size">${fileSize}</span>
+            </div>
+        `;
+    }).join('');
+    
+    return `<div class="file-attachments">${attachmentItems}</div>`;
+}
 function sortTable() {
     loadTicketsTable();
 }
@@ -369,6 +458,14 @@ function showAddTicketModal() {
     // Reset form
     document.getElementById('ticketForm').reset();
     
+    // Clear file inputs and names
+    for (let i = 0; i < 3; i++) {
+        const fileInput = document.getElementById(`attachment_${i}`);
+        const fileName = document.getElementById(`fileName_${i}`);
+        if (fileInput) fileInput.value = '';
+        if (fileName) fileName.textContent = '';
+    }
+    
     // Set today's date and make it readonly (always readonly for everyone)
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('dateRaised').value = today;
@@ -436,6 +533,15 @@ function editTicket(srNo) {
 function closeTicketModal() {
     document.getElementById('ticketModal').style.display = 'none';
     document.getElementById('ticketForm').reset();
+    
+    // Clear file inputs and names
+    for (let i = 0; i < 3; i++) {
+        const fileInput = document.getElementById(`attachment_${i}`);
+        const fileName = document.getElementById(`fileName_${i}`);
+        if (fileInput) fileInput.value = '';
+        if (fileName) fileName.textContent = '';
+    }
+    
     currentEditTicket = null;
 }
 
@@ -443,14 +549,8 @@ function closeTicketModal() {
 async function handleTicketSubmit(event) {
     event.preventDefault();
     
-    const formData = {
-        date_raised: document.getElementById('dateRaised').value,
-        issue: document.getElementById('issue').value.trim(),
-        raised_by: document.getElementById('raisedBy').value.trim(),
-        status: document.getElementById('status').value,
-        assigned_to: document.getElementById('assignedTo').value.trim(),
-        comments: document.getElementById('comments').value.trim()
-    };
+    // Check if any files are attached
+    const hasFiles = Array.from(document.querySelectorAll('.file-input')).some(input => input.files.length > 0);
     
     showLoading();
     
@@ -459,8 +559,17 @@ async function handleTicketSubmit(event) {
         let isUpdate = false;
         
         if (currentEditTicket) {
-            // Update existing ticket
+            // Update existing ticket (no file uploads on edit)
             isUpdate = true;
+            const formData = {
+                date_raised: document.getElementById('dateRaised').value,
+                issue: document.getElementById('issue').value.trim(),
+                raised_by: document.getElementById('raisedBy').value.trim(),
+                status: document.getElementById('status').value,
+                assigned_to: document.getElementById('assignedTo').value.trim(),
+                comments: document.getElementById('comments').value.trim()
+            };
+            
             response = await fetch(`/update_ticket/${currentEditTicket.sr_no}`, {
                 method: 'PUT',
                 headers: {
@@ -469,15 +578,50 @@ async function handleTicketSubmit(event) {
                 body: JSON.stringify(formData)
             });
         } else {
-            // Add new ticket
+            // Add new ticket (with potential file uploads)
             isUpdate = false;
-            response = await fetch('/add_ticket', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
+            
+            if (hasFiles) {
+                // Use FormData for file uploads
+                const formData = new FormData();
+                formData.append('date_raised', document.getElementById('dateRaised').value);
+                formData.append('issue', document.getElementById('issue').value.trim());
+                formData.append('raised_by', document.getElementById('raisedBy').value.trim());
+                formData.append('status', document.getElementById('status').value);
+                formData.append('assigned_to', document.getElementById('assignedTo').value.trim());
+                formData.append('comments', document.getElementById('comments').value.trim());
+                
+                // Add files
+                for (let i = 0; i < 3; i++) {
+                    const fileInput = document.getElementById(`attachment_${i}`);
+                    if (fileInput && fileInput.files[0]) {
+                        formData.append(`attachment_${i}`, fileInput.files[0]);
+                    }
+                }
+                
+                response = await fetch('/add_ticket', {
+                    method: 'POST',
+                    body: formData
+                });
+            } else {
+                // Use JSON for tickets without files
+                const jsonData = {
+                    date_raised: document.getElementById('dateRaised').value,
+                    issue: document.getElementById('issue').value.trim(),
+                    raised_by: document.getElementById('raisedBy').value.trim(),
+                    status: document.getElementById('status').value,
+                    assigned_to: document.getElementById('assignedTo').value.trim(),
+                    comments: document.getElementById('comments').value.trim()
+                };
+                
+                response = await fetch('/add_ticket', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData)
+                });
+            }
         }
         
         const result = await response.json();
@@ -502,7 +646,6 @@ async function handleTicketSubmit(event) {
         hideLoading();
     }
 }
-
 // Delete ticket (admin only)
 async function deleteTicket(srNo) {
     if (!confirm('Are you sure you want to delete this ticket? This action cannot be undone.')) {

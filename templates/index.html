@@ -100,6 +100,7 @@
                                 <th><i class="fas fa-flag"></i> Status</th>
                                 <th><i class="fas fa-user-tie"></i> Assigned To</th>
                                 <th><i class="fas fa-comments"></i> Comments</th>
+                                <th><i class="fas fa-paperclip"></i> Files</th>
                                 <th id="actionsHeader" style="display: none;"><i class="fas fa-cog"></i> Actions</th>
                             </tr>
                         </thead>
@@ -200,6 +201,47 @@
                         </label>
                         <textarea id="issue" name="issue" rows="4" required 
                                   placeholder="Describe the issue in detail..." class="form-textarea"></textarea>
+                    </div>
+                    
+                    <!-- File Attachments Section -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-paperclip"></i> Attachments (Optional - Max 3 files)
+                        </label>
+                        <div class="file-upload-container">
+                            <div class="file-input-group">
+                                <input type="file" id="attachment_0" name="attachment_0" class="file-input" 
+                                       accept=".txt,.pdf,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.rtf,.odt">
+                                <label for="attachment_0" class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Choose File 1</span>
+                                </label>
+                                <span class="file-name" id="fileName_0"></span>
+                            </div>
+                            
+                            <div class="file-input-group">
+                                <input type="file" id="attachment_1" name="attachment_1" class="file-input"
+                                       accept=".txt,.pdf,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.rtf,.odt">
+                                <label for="attachment_1" class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Choose File 2</span>
+                                </label>
+                                <span class="file-name" id="fileName_1"></span>
+                            </div>
+                            
+                            <div class="file-input-group">
+                                <input type="file" id="attachment_2" name="attachment_2" class="file-input"
+                                       accept=".txt,.pdf,.png,.jpg,.jpeg,.gif,.bmp,.tiff,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.rtf,.odt">
+                                <label for="attachment_2" class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span>Choose File 3</span>
+                                </label>
+                                <span class="file-name" id="fileName_2"></span>
+                            </div>
+                        </div>
+                        <small class="file-help-text">
+                            Supported formats: Images, PDFs, Word docs, Excel files, PowerPoint, Text files. Max size: 25MB per file.
+                        </small>
                     </div>
                     
                     <div class="form-row">
