@@ -54,12 +54,12 @@
   {
     "sr_no": 8,
     "date_raised": "2025-07-15",
-    "issue": "WINDD drawinf for P14156 not opening",
+    "issue": "WINDD drawing for P14156 not opening.",
     "raised_by": "Chandrashekhar N",
     "status": "In process",
-    "assigned_to": "Manoj",
+    "assigned_to": "Veeresh",
     "comments": "Manoj will resolve by 23rd July.",
     "created_at": "2025-07-15T09:40:21.590197",
-    "updated_at": "2025-07-21T11:01:28.327051"
+    "updated_at": "2025-07-21T11:39:16.716678"
   }
 ]

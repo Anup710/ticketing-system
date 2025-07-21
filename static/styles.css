@@ -1,16 +1,17 @@
 /* Modern Professional Ticketing System CSS */
 
-/* CSS Variables for Consistent Theming */
+/* CSS Variables for Wipro Brand Theming */
 :root {
-    --primary: #2563eb;
-    --primary-dark: #1d4ed8;
-    --primary-light: #3b82f6;
-    --success: #10b981;
-    --success-dark: #059669;
-    --warning: #f59e0b;
-    --warning-dark: #d97706;
-    --danger: #ef4444;
-    --danger-dark: #dc2626;
+    --wipro-primary: #002F5B;        /* Wipro Navy Blue */
+    --wipro-secondary: #B0C4DE;      /* Wipro Light Blue */
+    --wipro-accent: #041f3c;         /* Wipro Dark Blue */
+    --wipro-light: #f8fafc;          /* Light background */
+    --success: #4CAF50;              /* Wipro Green */
+    --success-dark: #45a049;
+    --warning: #efa15d;              /* Wipro Orange */
+    --warning-dark: #e68a00;
+    --danger: #dc3545;
+    --danger-dark: #c82333;
     --gray-50: #f9fafb;
     --gray-100: #f3f4f6;
     --gray-200: #e5e7eb;
@@ -30,6 +31,21 @@
     --radius: 8px;
     --radius-lg: 12px;
     --radius-xl: 16px;
+/* Specific styling for Login and Sign In buttons */
+.btn-login,
+.btn-signin {
+    background: #efa15d !important;
+    color: white !important;
+    border: 2px solid #e68a00 !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.btn-login:hover,
+.btn-signin:hover {
+    background: #e68a00 !important;
+    color: white !important;
+    border-color: #efa15d !important;
+    box-shadow: var(--shadow-lg) !important;
 }
 
 /* User cell styling */
@@ -69,7 +85,7 @@ html {
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, var(--wipro-secondary) 0%, var(--wipro-primary) 100%);
     min-height: 100vh;
     color: var(--gray-800);
     line-height: 1.6;
@@ -119,7 +135,7 @@ body {
 .brand-icon {
     width: 48px;
     height: 48px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    background: linear-gradient(135deg, var(--wipro-primary), var(--wipro-accent));
     border-radius: var(--radius-lg);
     display: flex;
     align-items: center;
@@ -132,7 +148,7 @@ body {
 .brand-text h1 {
     font-size: 24px;
     font-weight: 700;
-    color: var(--gray-800);
+    color: var(--wipro-primary);
     margin: 0;
 }
 
@@ -195,12 +211,12 @@ body {
 }
 
 .badge-admin {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
+    background: linear-gradient(135deg, var(--warning), var(--warning-dark));
     color: white;
 }
 
 .badge-user {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: linear-gradient(135deg, var(--wipro-primary), var(--wipro-accent));
     color: white;
 }
 
@@ -368,8 +384,8 @@ body {
 
 .sort-select:focus {
     outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--wipro-primary);
+    box-shadow: 0 0 0 3px rgba(0, 47, 91, 0.1);
 }
 
 /* Table Container with Modern Design */
@@ -409,7 +425,7 @@ body {
 
 .stat-badge {
     padding: 0.5rem 1rem;
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    background: linear-gradient(135deg, var(--wipro-primary), var(--wipro-accent));
     color: white;
     border-radius: var(--radius);
     font-weight: 600;
@@ -784,25 +800,34 @@ body {
     font-size: 16px;
 }
 
-/* Toast Notifications */
+/* Enhanced Toast Notifications with Better Visibility */
 .toast-container {
     position: fixed;
     top: 2rem;
     right: 2rem;
     z-index: 2000;
-    max-width: 400px;
+    max-width: 420px;
+    pointer-events: none;
 }
 
 .toast {
-    padding: 1rem 1.5rem;
+    padding: 1.25rem 1.75rem;
     border-radius: var(--radius-lg);
     margin-bottom: 1rem;
     box-shadow: var(--shadow-xl);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    animation: slideInRight 0.3s ease;
+    border: 2px solid;
+    animation: slideInRight 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
     overflow: hidden;
+    pointer-events: auto;
+    min-width: 300px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
 }
 
 .toast::before {
@@ -810,27 +835,72 @@ body {
     position: absolute;
     top: 0;
     left: 0;
-    width: 4px;
+    width: 5px;
     height: 100%;
     background: currentColor;
 }
 
+.toast::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, currentColor 100%);
+    opacity: 0.3;
+}
+
+.toast-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.toast-content {
+    flex: 1;
+    font-weight: 600;
+}
+
 .toast.success {
-    background: rgba(16, 185, 129, 0.95);
-    color: white;
-    border-color: rgba(16, 185, 129, 0.3);
+    background: rgba(255, 255, 255, 0.98);
+    color: var(--success);
+    border-color: var(--success);
+    box-shadow: 0 20px 25px -5px rgba(76, 175, 80, 0.3), 0 8px 10px -6px rgba(76, 175, 80, 0.2);
 }
 
 .toast.error {
-    background: rgba(239, 68, 68, 0.95);
-    color: white;
-    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(255, 255, 255, 0.98);
+    color: var(--danger);
+    border-color: var(--danger);
+    box-shadow: 0 20px 25px -5px rgba(220, 53, 69, 0.3), 0 8px 10px -6px rgba(220, 53, 69, 0.2);
 }
 
 .toast.info {
-    background: rgba(37, 99, 235, 0.95);
-    color: white;
-    border-color: rgba(37, 99, 235, 0.3);
+    background: rgba(255, 255, 255, 0.98);
+    color: var(--wipro-primary);
+    border-color: var(--wipro-primary);
+    box-shadow: 0 20px 25px -5px rgba(0, 47, 91, 0.3), 0 8px 10px -6px rgba(0, 47, 91, 0.2);
+}
+
+/* Toast fade out animation */
+.toast.fade-out {
+    animation: fadeOutRight 0.3s ease-in-out forwards;
+}
+
+@keyframes fadeOutRight {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
 }
 
 /* Animations */
@@ -1099,4 +1169,5 @@ body {
         padding: 0.5rem;
         font-size: 12px;
     }
+}
 }

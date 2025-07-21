@@ -248,19 +248,36 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Show success/error messages
+// Show success/error messages with enhanced styling
 function showMessage(message, type = 'success') {
     const container = document.getElementById('messageContainer');
     const content = document.getElementById('messageContent');
     
-    content.textContent = message;
-    content.className = `message ${type}`;
+    // Icon mapping for different message types
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-exclamation-triangle', 
+        info: 'fas fa-info-circle'
+    };
+    
+    // Create toast with icon and content
+    content.innerHTML = `
+        <div class="toast-icon">
+            <i class="${icons[type] || icons.success}"></i>
+        </div>
+        <div class="toast-content">${message}</div>
+    `;
+    content.className = `toast ${type}`;
     container.style.display = 'block';
     
-    // Auto-hide after 3 seconds
+    // Auto-hide after 4 seconds with fade out animation
     setTimeout(() => {
-        container.style.display = 'none';
-    }, 3000);
+        content.classList.add('fade-out');
+        setTimeout(() => {
+            container.style.display = 'none';
+            content.classList.remove('fade-out');
+        }, 300);
+    }, 4000);
 }
 
 // Show login modal
@@ -439,8 +456,11 @@ async function handleTicketSubmit(event) {
     
     try {
         let response;
+        let isUpdate = false;
+        
         if (currentEditTicket) {
             // Update existing ticket
+            isUpdate = true;
             response = await fetch(`/update_ticket/${currentEditTicket.sr_no}`, {
                 method: 'PUT',
                 headers: {
@@ -450,6 +470,7 @@ async function handleTicketSubmit(event) {
             });
         } else {
             // Add new ticket
+            isUpdate = false;
             response = await fetch('/add_ticket', {
                 method: 'POST',
                 headers: {
@@ -464,7 +485,9 @@ async function handleTicketSubmit(event) {
         if (result.success) {
             closeTicketModal();
             await refreshTable();
-            if (currentEditTicket) {
+            
+            // Show the correct message based on action
+            if (isUpdate) {
                 showMessage('Ticket updated successfully!', 'success');
             } else {
                 showMessage('Ticket submitted successfully!', 'success');
